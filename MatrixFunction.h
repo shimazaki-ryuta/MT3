@@ -5,6 +5,8 @@
 #include <assert.h>
 #include <Novice.h>
 #include <assert.h>
+#include <cmath>
+
 /*
 template<typename MatrixSize>
 MatrixSize Add(MatrixSize matrix1, MatrixSize matrix2);
@@ -423,6 +425,37 @@ Vector3 Transform(const Vector3& vector,const Matrix4x4& matrix)
 	return transform;
 }
 
+Matrix4x4 MakeRotateXMatrix(float radian)
+{
+	Matrix4x4 rotate = MakeIdentity4x4();
+	rotate.m[1][1] = std::cos(radian);
+	rotate.m[1][2] = std::sin(radian);
+	rotate.m[2][1] = -std::sin(radian);
+	rotate.m[2][2] = std::cos(radian);
+
+	return rotate;
+}
+
+Matrix4x4 MakeRotateYMatrix(float radian)
+{
+	Matrix4x4 rotate = MakeIdentity4x4();
+	rotate.m[0][0] = std::cos(radian);
+	rotate.m[2][0] = std::sin(radian);
+	rotate.m[0][2] = -std::sin(radian);
+	rotate.m[2][2] = std::cos(radian);
+
+	return rotate;
+}
+Matrix4x4 MakeRotateZMatrix(float radian)
+{
+	Matrix4x4 rotate = MakeIdentity4x4();
+	rotate.m[0][0] = std::cos(radian);
+	rotate.m[0][1] = std::sin(radian);
+	rotate.m[1][0] = -std::sin(radian);
+	rotate.m[1][1] = std::cos(radian);
+
+	return rotate;
+}
 void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix)
 {
 	int size = ColumnSize(matrix);
