@@ -12,11 +12,3 @@ struct Matrix3x3
 {
 	float m[3][3];
 };
-
-template<typename T>
-T Clamp(T num, T min, T max)
-{
-	if (num < min) { return min; }
-	if (num > max) { return max; }
-	return num;
-}

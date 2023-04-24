@@ -36,7 +36,7 @@ float Dot(const Vector3& v1, const Vector3& v2)
 
 float Length(const Vector3& v)
 {
-	return sqrtf(powf(v.x,2) + powf(v.y,2) + powf(v.z,2));
+	return sqrtf(Dot(v,v));
 }
 
 Vector3 Nomalize(const Vector3& v)
