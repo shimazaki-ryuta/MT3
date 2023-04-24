@@ -456,6 +456,27 @@ Matrix4x4 MakeRotateZMatrix(float radian)
 
 	return rotate;
 }
+
+Matrix4x4 MakeRotateMatrix(const Vector3& rotate)
+{
+	Matrix4x4 rotateMatrix = MakeIdentity4x4();
+	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
+	Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
+	Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);
+	rotateMatrix = Multiply(rotateXMatrix, Multiply(rotateYMatrix, rotateZMatrix));
+
+	return rotateMatrix;
+}
+
+Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate)
+{
+	Matrix4x4 matrix;
+	matrix = MakeScaleMatrix(scale);
+	matrix = Multiply(matrix,MakeRotateMatrix(rotate));
+	matrix = Multiply(matrix, MakeTranslateMatrix(translate));
+	return matrix;
+}
+
 void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix)
 {
 	int size = ColumnSize(matrix);
