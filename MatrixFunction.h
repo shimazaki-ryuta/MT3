@@ -4,7 +4,7 @@
 #include <math.h>
 #include <assert.h>
 #include <Novice.h>
-
+#include <assert.h>
 /*
 template<typename MatrixSize>
 MatrixSize Add(MatrixSize matrix1, MatrixSize matrix2);
@@ -380,6 +380,47 @@ Matrix4x4 MakeIdentity4x4()
 		}
 	}
 	return result;
+}
+
+//アフィン変換関係
+
+Matrix4x4 MakeTranslateMatrix(const Vector3& translate)
+{
+	Matrix4x4 translateMatrix = MakeIdentity4x4();
+	translateMatrix.m[3][0] = translate.x;
+	translateMatrix.m[3][1] = translate.y;
+	translateMatrix.m[3][2] = translate.z;
+	return translateMatrix;
+}
+
+Matrix4x4 MakeScaleMatrix(const Vector3& scale)
+{
+	Matrix4x4 scaleMatrix = MakeIdentity4x4();
+	scaleMatrix.m[0][0] = scale.x;
+	scaleMatrix.m[1][1] = scale.y;
+	scaleMatrix.m[2][2] = scale.z;
+	return scaleMatrix;
+}
+
+Vector3 Transform(const Vector3& vector,const Matrix4x4& matrix)
+{
+	Vector3 transform;
+	float transformMatrix[4];
+	float matrix1x4[4] = {vector.x,vector.y,vector.z ,1.0f};
+	for (int column = 0; column < 4; column++)
+	{
+		transformMatrix[column] = 0.0f;
+		for (int i = 0; i < 4; i++)
+		{
+			transformMatrix[column] += matrix1x4[i] * matrix.m[i][column];
+		}
+	}
+	float w = transformMatrix[3];
+	assert(w != 0.0f);
+	transform.x = transformMatrix[0] / w;
+	transform.y = transformMatrix[1] / w;
+	transform.z = transformMatrix[2] / w;
+	return transform;
 }
 
 void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix)
