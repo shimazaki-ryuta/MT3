@@ -9,7 +9,7 @@ const char kWindowTitle[] = "LE2A_07_シマザキリュウタ";
 const int kWindowWidth = 1280;
 const int kWindowHeight = 720;
 
-const float kSpeed = 0.1f;
+const float kSpeed = 0.05f;
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -30,7 +30,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 rotate{0.0f,0.0f,0.0f};
 	Vector3 translate{0.0f,0.0f,5.0f};
 
-	Vector3 cameraPosition{0.0f,0.0f,0.0f};
+	Vector3 cameraPosition{ 0.0f,0.0f,0.0f };
+	Vector3 cameraRotate{ 0.0f,0.0f,0.0f };
+
+	
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -61,7 +64,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			translate.z += kSpeed;
 		}
 		rotate.y += kSpeed;
-
+		//rotate.y = 0.0f;
 		Matrix4x4 worldMatrix = MakeAffineMatrix({1.0f,1.0f,1.0f},rotate,translate);
 		Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f },cameraPosition);
 		Matrix4x4 viewMatrix = Inverse(cameraMatrix);
@@ -69,10 +72,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix,Multiply(viewMatrix,projectionMatrix));
 		Matrix4x4 viewPortMatrix = MakeViewportMatrix(0,0,float(kWindowWidth) ,float(kWindowHeight),0.0f,1.0f);
 		Vector3 screenVertices[3];
+		Vector3 worldVertices[3];
+
 		for (uint32_t i=0;i<3;++i)
 		{
 			Vector3 ndcVertex = Transform(kLocalVertices[i],worldViewProjectionMatrix);
 			screenVertices[i] = Transform(ndcVertex,viewPortMatrix);
+			worldVertices[i] = Transform(kLocalVertices[i],worldMatrix);
 		}
 		
 		///
@@ -84,9 +90,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		
 		VectorScreenPrintf(0,0,cross,"Cross");
-
-		Novice::DrawTriangle(int(screenVertices[0].x), int(screenVertices[0].y), int(screenVertices[1].x), int(screenVertices[1].y),
-			int(screenVertices[2].x), int(screenVertices[2].y),RED,kFillModeSolid);
+		float culling = Dot({ 0.0f,0.0f,1.0f }, Cross(Subtruct(worldVertices[1], worldVertices[0]), Subtruct(worldVertices[2], worldVertices[1])));
+		if (culling<=0.0f)
+		{
+			Novice::DrawTriangle(int(screenVertices[0].x), int(screenVertices[0].y), int(screenVertices[1].x), int(screenVertices[1].y),
+				int(screenVertices[2].x), int(screenVertices[2].y), RED, kFillModeSolid);
+		}
 		///
 		/// ↑描画処理ここまで
 		///
