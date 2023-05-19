@@ -1,6 +1,8 @@
 #include <math.h>
 #include <Novice.h>
 #include "VectorFunction.h"
+#include <cmath>
+#include <algorithm>
 
 Vector3 Add(const Vector3& v1, const Vector3& v2)
 {
@@ -11,7 +13,7 @@ Vector3 Add(const Vector3& v1, const Vector3& v2)
 	return v;
 }
 
-Vector3 Subtruct(const Vector3& v1, const Vector3& v2)
+Vector3 Subtract(const Vector3& v1, const Vector3& v2)
 {
 	Vector3 v;
 	v.x = v1.x - v2.x;
@@ -39,7 +41,7 @@ float Length(const Vector3& v)
 	return sqrtf(Dot(v,v));
 }
 
-Vector3 Nomalize(const Vector3& v)
+Vector3 Normalize(const Vector3& v)
 {
 	float length = Length(v);
 	if (length == 0)
@@ -51,6 +53,35 @@ Vector3 Nomalize(const Vector3& v)
 Vector3 Cross(const Vector3& v1, const Vector3& v2)
 {
 	return {v1.y*v2.z - v1.z*v2.y, v1.z*v2.x - v1.x*v2.z, v1.x*v2.y -v1.y*v2.x};
+}
+
+Vector3 Project(const Vector3& v1, const Vector3& v2)
+{
+	return Multiply(Dot(v1, Normalize(v2)), Normalize(v2));
+}
+
+Vector3 ClosestPoint(const Vector3& point, const Line& line)
+{
+	Vector3 a = Subtract(point, line.origin);
+	Vector3 b = line.diff;
+	float t = Dot(a, b) / float(std::pow(Length(b), 2));
+	return Add(line.origin, Multiply(t, b));
+}
+Vector3 ClosestPoint(const Vector3& point, const Ray& ray)
+{
+	Vector3 a = Subtract(point, ray.origin);
+	Vector3 b = ray.diff;
+	float t = Dot(a, b) / float(std::pow(Length(b), 2));
+	t=std::clamp(t, 0.0f, t);
+	return Add(ray.origin, Multiply(t, b));
+}
+Vector3 ClosestPoint(const Vector3& point, const Segment& segment)
+{
+	Vector3 a = Subtract(point, segment.origin);
+	Vector3 b = segment.diff;
+	float t = Dot(a, b) / float(std::pow(Length(b),2));
+	t=std::clamp(t,0.0f,1.0f);
+	return Add(segment.origin,Multiply(t,b));
 }
 
 void VectorScreenPrintf(int x,int y, Vector3 v,const char* label)
