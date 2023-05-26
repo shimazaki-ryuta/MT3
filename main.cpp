@@ -6,7 +6,10 @@
 #include "Matrix.h"
 #include "MatrixFunction.h"
 
+#include "MyDebugCamera.h"
 #include "Sphere.h"
+#include "Plane.h"
+#include "Collision.h"
 #include "Draw3dStandard.h"
 const char kWindowTitle[] = "LE2A_07_シマザキリュウタ";
 
@@ -26,20 +29,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char preKeys[256] = {0};
 
 	//カメラ操作用
-	int LeftClick=0;
+	/*int LeftClick = 0;
 	int preLeftClick=0;
 	Vector2 mousePosition;
 	Vector2 preMousePosition;
-
+	*/
 	Vector3 rotate{0.0f,0.0f,0.0f};
 	Vector3 translate{0.0f,0.0f,0.0f};
 
 	Vector3 cameraTranslate{ 0.0f,1.9f,-6.49f };
 	Vector3 cameraRotate{ 0.26f,0.0f,0.0f };
+	DebugCamera debugCamera;
+	debugCamera.Initialize({1.0f,1.0f,1.0f},cameraRotate,cameraTranslate);
 
-	Sphere s1{ {0.0f,0.0f,0.0f},1.0f };
-	Sphere s2{ {1.0f,0.0f,1.0f},2.0f };
-
+	Sphere s{ {0.0f,0.0f,0.0f},1.0f };
+	Plane p{ {0.0f,1.0f,0.0f},1.0f };
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -52,52 +56,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
-		preLeftClick = LeftClick;
-		LeftClick = Novice::IsPressMouse(1);
-		if (LeftClick)
-		{
-
-			int x, y;
-			Novice::GetMousePosition(&x, &y);
-			mousePosition = { float(x),float(y) };
-			if (preLeftClick)
-			{
-				Vector2 dragLength = mousePosition - preMousePosition;
-				cameraRotate.x += dragLength.y * 0.005f;
-				cameraRotate.y += dragLength.x * 0.005f;
-
-			}
-			preMousePosition = mousePosition;
-		}
-		if (keys[DIK_A])
-		{
-			cameraTranslate.x -= kSpeed;
-		}
-		if (keys[DIK_D])
-		{
-			cameraTranslate.x += kSpeed;
-		}
-		if (keys[DIK_S])
-		{
-			cameraTranslate.z -= kSpeed;
-		}
-		if (keys[DIK_W])
-		{
-			cameraTranslate.z += kSpeed;
-		}
-		if (keys[DIK_Q])
-		{
-			cameraTranslate.y -= kSpeed;
-		}
-		if (keys[DIK_E])
-		{
-			cameraTranslate.y += kSpeed;
-		}
+		debugCamera.Update(keys);
 		//rotate.y += kSpeed;
 		rotate.y = 0.0f;
 		Matrix4x4 worldMatrix = MakeAffineMatrix({1.0f,1.0f,1.0f},rotate,translate);
-		Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate,cameraTranslate);
-		Matrix4x4 viewMatrix = Inverse(cameraMatrix);
+		//Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate,cameraTranslate);
+		Matrix4x4 viewMatrix = Inverse(debugCamera.GetWorld());
 		Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f,float(kWindowWidth)/float(kWindowHeight),0.1f,100.0f);
 		
 		Matrix4x4 viewProjectionMatrix = Multiply(viewMatrix,projectionMatrix);
@@ -106,7 +70,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewPortMatrix = MakeViewportMatrix(0,0,float(kWindowWidth) ,float(kWindowHeight),0.0f,1.0f);
 		
 		uint32_t color = WHITE;
-		if (IsCollision(s1,s2))
+		if (IsCollision(s, p))
 		{
 			color = RED;
 		}
@@ -114,11 +78,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Begin("Window");
 		//ImGui::DragFloat3("CameraTranslate",&cameraTranslate.x,0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
-		ImGui::DragFloat3("s1Center", &s1.center.x, 0.01f);
-		ImGui::DragFloat("s1Radius", &s1.radius, 0.01f);
-		ImGui::DragFloat3("s2Center", &s2.center.x, 0.01f);
-		ImGui::DragFloat("s2Radius", &s2.radius, 0.01f);
+		ImGui::DragFloat3("SphereCenter", &s.center.x, 0.01f);
+		ImGui::DragFloat("SphereRadius", &s.radius, 0.01f);
+		ImGui::DragFloat3("PlaneNormal", &p.nomal.x, 0.01f);
+		ImGui::DragFloat("PlaneDistance", &p.distance, 0.01f);
 		ImGui::End();
+		p.nomal = Normalize(p.nomal);
 		///
 		/// ↑更新処理ここまで
 		///
@@ -128,8 +93,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		
 		DrawGrid(viewProjectionMatrix,viewPortMatrix);
-		DrawSphere(s1,viewProjectionMatrix,viewPortMatrix,color);
-		DrawSphere(s2, viewProjectionMatrix, viewPortMatrix, WHITE);
+		DrawSphere(s,viewProjectionMatrix,viewPortMatrix,color);
+		DrawPlane(p, viewProjectionMatrix, viewPortMatrix, WHITE);
 		///
 		/// ↑描画処理ここまで
 		///

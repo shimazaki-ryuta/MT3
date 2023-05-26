@@ -22,3 +22,10 @@ Vector2 operator+(const Vector2&, const Vector2&);
 Vector3 operator+(const Vector3&, const Vector3&);
 Vector2 operator-(const Vector2&, const Vector2&);
 Vector3 operator-(const Vector3&, const Vector3&);
+Vector3 operator*(float k, const Vector3& v);
+Vector3 operator*(const Vector3& v, float k);
+
+
+Vector3 operator+=(Vector3&, Vector3&);
+Vector3 operator+=(Vector3&, const Vector3&);
+Vector3 operator-=(const Vector3&, const Vector3&);
