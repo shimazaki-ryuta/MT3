@@ -9,8 +9,11 @@ void DebugCamera::Initialize(const Vector3& scale, const Vector3& rotate, const 
 	translate_ = translate;
 }
 
-void DebugCamera::Update(char keys[])
+void DebugCamera::Update()
 {
+	memcpy(preKeys, keys, 256);
+	Novice::GetHitKeyStateAll(keys);
+
 	preLeftClick = LeftClick;
 	LeftClick = Novice::IsPressMouse(1);
 	if (LeftClick)

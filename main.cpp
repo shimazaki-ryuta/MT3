@@ -56,7 +56,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
-		debugCamera.Update(keys);
+		debugCamera.Update();
 		//rotate.y += kSpeed;
 		rotate.y = 0.0f;
 		Matrix4x4 worldMatrix = MakeAffineMatrix({1.0f,1.0f,1.0f},rotate,translate);
