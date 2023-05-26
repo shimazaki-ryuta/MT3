@@ -109,6 +109,7 @@
     <ClCompile Include="Draw3dStandard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MatrixFunction.cpp" />
+    <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="VectorFunction.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -141,6 +142,7 @@
     <ClInclude Include="Draw3dStandard.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="MatrixFunction.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="VectorFunction.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

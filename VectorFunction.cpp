@@ -4,6 +4,13 @@
 #include <cmath>
 #include <algorithm>
 
+Vector2 Add(const Vector2& v1, const Vector2& v2)
+{
+	Vector2 v;
+	v.x = v1.x + v2.x;
+	v.y = v1.y + v2.y;
+	return v;
+}
 Vector3 Add(const Vector3& v1, const Vector3& v2)
 {
 	Vector3 v;
@@ -13,6 +20,13 @@ Vector3 Add(const Vector3& v1, const Vector3& v2)
 	return v;
 }
 
+Vector2 Subtract(const Vector2& v1, const Vector2& v2)
+{
+	Vector2 v;
+	v.x = v1.x - v2.x;
+	v.y = v1.y - v2.y;
+	return v;
+}
 Vector3 Subtract(const Vector3& v1, const Vector3& v2)
 {
 	Vector3 v;
@@ -91,3 +105,8 @@ void VectorScreenPrintf(int x,int y, Vector3 v,const char* label)
 	Novice::ScreenPrintf(x + kColumnWidth*2, y, "%6.02f", v.z);
 	Novice::ScreenPrintf(x + kColumnWidth*3, y, "%s", label);
 }
+
+Vector2 operator+(const Vector2& v1, const Vector2& v2) { return Add(v1, v2); }
+Vector3 operator+(const Vector3& v1, const Vector3& v2) { return Add(v1, v2); }
+Vector2 operator-(const Vector2& v1, const Vector2& v2) { return Subtract(v1, v2); }
+Vector3 operator-(const Vector3& v1, const Vector3& v2) { return Subtract(v1, v2); }
