@@ -41,7 +41,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	debugCamera.Initialize({1.0f,1.0f,1.0f},cameraRotate,cameraTranslate);
 
 	Segment s{ {-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f } };
-	Plane p{ {0.0f,1.0f,0.0f},1.0f };
+	Triangle t{ {{0.0f,1.0f,0.0f},{1.0f,0.0f,0.0f},{-1.0f,0.0f,0.0f}} };
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -65,7 +65,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewPortMatrix = MakeViewportMatrix(0,0,float(kWindowWidth) ,float(kWindowHeight),0.0f,1.0f);
 		
 		uint32_t color = WHITE;
-		if (IsCollision(s, p))
+		if (IsCollision(t,s))
 		{
 			color = RED;
 		}
@@ -75,11 +75,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 		ImGui::DragFloat3("SegmentOrigin", &s.origin.x, 0.01f);
 		ImGui::DragFloat3("SegmentDiff", &s.diff.x, 0.01f);
-		ImGui::DragFloat3("PlaneNormal", &p.nomal.x, 0.01f);
-		ImGui::DragFloat("PlaneDistance", &p.distance, 0.01f);
-		ImGui::End();
-		p.nomal = Normalize(p.nomal);
+		ImGui::DragFloat3("Vertices0", &t.vertices[0].x, 0.01f);
+		ImGui::DragFloat3("Vertices1", &t.vertices[1].x, 0.01f);
+		ImGui::DragFloat3("Vertices2", &t.vertices[2].x, 0.01f);
 
+		ImGui::End();
+		
 		///
 		/// ↑更新処理ここまで
 		///
@@ -91,7 +92,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawGrid(viewProjectionMatrix,viewPortMatrix);
 		//DrawSphere(s,viewProjectionMatrix,viewPortMatrix,color);
 		DrawSegment(s,color,viewProjectionMatrix,viewPortMatrix);
-		DrawPlane(p, viewProjectionMatrix, viewPortMatrix, WHITE);
+		DrawTriangle(t,viewProjectionMatrix,viewPortMatrix,WHITE);
 		///
 		/// ↑描画処理ここまで
 		///
