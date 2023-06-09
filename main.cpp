@@ -34,15 +34,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector2 mousePosition;
 	Vector2 preMousePosition;
 	*/
-	Vector3 rotate{0.0f,0.0f,0.0f};
-	Vector3 translate{0.0f,0.0f,0.0f};
 
 	Vector3 cameraTranslate{ 0.0f,1.9f,-6.49f };
 	Vector3 cameraRotate{ 0.26f,0.0f,0.0f };
 	DebugCamera debugCamera;
 	debugCamera.Initialize({1.0f,1.0f,1.0f},cameraRotate,cameraTranslate);
 
-	Sphere s{ {0.0f,0.0f,0.0f},1.0f };
+	Segment s{ {-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f } };
 	Plane p{ {0.0f,1.0f,0.0f},1.0f };
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -57,16 +55,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 		debugCamera.Update();
-		//rotate.y += kSpeed;
-		rotate.y = 0.0f;
-		Matrix4x4 worldMatrix = MakeAffineMatrix({1.0f,1.0f,1.0f},rotate,translate);
+		
 		//Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate,cameraTranslate);
 		Matrix4x4 viewMatrix = Inverse(debugCamera.GetWorld());
 		Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f,float(kWindowWidth)/float(kWindowHeight),0.1f,100.0f);
 		
 		Matrix4x4 viewProjectionMatrix = Multiply(viewMatrix,projectionMatrix);
 
-		Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix,Multiply(viewMatrix,projectionMatrix));
 		Matrix4x4 viewPortMatrix = MakeViewportMatrix(0,0,float(kWindowWidth) ,float(kWindowHeight),0.0f,1.0f);
 		
 		uint32_t color = WHITE;
@@ -78,12 +73,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Begin("Window");
 		//ImGui::DragFloat3("CameraTranslate",&cameraTranslate.x,0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
-		ImGui::DragFloat3("SphereCenter", &s.center.x, 0.01f);
-		ImGui::DragFloat("SphereRadius", &s.radius, 0.01f);
+		ImGui::DragFloat3("SegmentOrigin", &s.origin.x, 0.01f);
+		ImGui::DragFloat3("SegmentDiff", &s.diff.x, 0.01f);
 		ImGui::DragFloat3("PlaneNormal", &p.nomal.x, 0.01f);
 		ImGui::DragFloat("PlaneDistance", &p.distance, 0.01f);
 		ImGui::End();
 		p.nomal = Normalize(p.nomal);
+
 		///
 		/// ↑更新処理ここまで
 		///
@@ -93,7 +89,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		
 		DrawGrid(viewProjectionMatrix,viewPortMatrix);
-		DrawSphere(s,viewProjectionMatrix,viewPortMatrix,color);
+		//DrawSphere(s,viewProjectionMatrix,viewPortMatrix,color);
+		DrawSegment(s,color,viewProjectionMatrix,viewPortMatrix);
 		DrawPlane(p, viewProjectionMatrix, viewPortMatrix, WHITE);
 		///
 		/// ↑描画処理ここまで

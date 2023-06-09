@@ -1,5 +1,7 @@
 #include "Draw3dStandard.h"
 #include "MatrixFunction.h"
+#include "VectorFunction.h"
+#include "Vector4.h"
 #include <Novice.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -51,3 +53,15 @@ void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMa
 		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), color);
 	}
 }
+
+void DrawSegment(const Segment& s,uint32_t color, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix)
+{
+	Vector3 screenOrigin, screenEnd;
+	Vector3 ndcVertex;
+	ndcVertex = Transform(s.origin, viewProjectionMatrix);
+	screenOrigin = Transform(ndcVertex, viewportMatrix);
+	ndcVertex = Transform(Add(s.origin, s.diff), viewProjectionMatrix);
+	screenEnd = Transform(ndcVertex, viewportMatrix);
+	Novice::DrawLine(int(screenOrigin.x), int(screenOrigin.y), int(screenEnd.x), int(screenEnd.y), color);
+}
+
