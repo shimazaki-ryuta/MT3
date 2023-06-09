@@ -28,3 +28,29 @@ bool IsCollision(const Segment& s, const Plane& p)
 	}
 	return false;
 }
+
+bool IsCollision(const Line& l, const Plane& p)
+{
+	float dot = Dot(l.diff, p.nomal);
+	if (dot == 0)
+	{
+		return false;
+	}
+	return true;
+}
+
+bool IsCollision(const Ray& r, const Plane& p)
+{
+	float dot = Dot(r.diff, p.nomal);
+	if (dot == 0)
+	{
+		return false;
+	}
+	float t = (p.distance - Dot(r.origin, p.nomal)) / dot;
+	if (t >= 0.0f)
+	{
+		return true;
+	}
+	return false;
+}
+
