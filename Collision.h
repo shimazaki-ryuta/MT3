@@ -3,6 +3,7 @@
 #include "Vector3.h"
 #include "Plane.h"
 #include "Triangle.h"
+#include "AABB.h"
 
 bool IsCollision(const Sphere& s, const Plane& p);
 bool IsCollision(const Segment& s, const Plane& p);
@@ -11,3 +12,4 @@ bool IsCollision(const Ray& r, const Plane& p);
 bool IsCollision(const Triangle& t, const Segment& s);
 bool IsCollision(const Triangle& t, const Line& l);
 bool IsCollision(const Triangle& t, const Ray& r);
+bool IsCollision(const AABB& aabb1, const AABB& aabb2);

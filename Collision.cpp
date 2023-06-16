@@ -137,3 +137,15 @@ bool IsCollision(const Triangle& triangle, const Ray& r)
 	}
 	return false;
 }
+
+bool IsCollision(const AABB& aabb1, const AABB& aabb2)
+{
+	AABB normalized1 = Normalize(aabb1) ,normalized2 = Normalize(aabb2);
+	if ((normalized1.min.x <= normalized2.max.x && normalized1.max.x >= normalized2.min.x) && 
+		(normalized1.min.y <= normalized2.max.y && normalized1.max.y >= normalized2.min.y) && 
+		(normalized1.min.z <= normalized2.max.z && normalized1.max.z >= normalized2.min.z))
+	{
+		return true;
+	}
+	return false;
+}

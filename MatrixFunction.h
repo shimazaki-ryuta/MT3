@@ -94,3 +94,6 @@ Matrix4x4 MakeOrthographicMatrix(float l, float t, float r, float b, float zn, f
 Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minD, float maxD);
 
 void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix);
+
+Vector3 operator*(const Vector3& v,const Matrix4x4& matrix);
+Matrix4x4 operator*(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
