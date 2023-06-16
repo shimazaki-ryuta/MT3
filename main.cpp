@@ -41,8 +41,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	DebugCamera debugCamera;
 	debugCamera.Initialize({1.0f,1.0f,1.0f},cameraRotate,cameraTranslate);
 
-	AABB aabb{ .min{-0.5f,-0.5f,-0.5f}, .max{0.0f,0.0f,0.0f} };
-	Sphere sphere{Vector3{0.0f,0.0f,0.0f},1.0f };
+	AABB aabb{ .min{-0.5f,-0.5f,-0.5f}, .max{0.5f,0.5f,0.5f} };
+	Segment segment{ {-0.7f,0.3f,0.0f},{2.0f,-0.5f,0.0f} };
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -66,7 +66,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewPortMatrix = MakeViewportMatrix(0,0,float(kWindowWidth) ,float(kWindowHeight),0.0f,1.0f);
 		
 		uint32_t color = WHITE;
-		if (IsCollision(aabb,sphere))
+		if (IsCollision(aabb,segment))
 		{
 			color = RED;
 		}
@@ -76,8 +76,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
 		ImGui::DragFloat3("AABBMin", &aabb.min.x, 0.01f);
 		ImGui::DragFloat3("AABBMax", &aabb.max.x, 0.01f);
-		ImGui::DragFloat3("SphereCenter", &sphere.center.x, 0.01f);
-		ImGui::DragFloat("SphereRadius", &sphere.radius, 0.01f);
+		ImGui::DragFloat3("SegmentOrigin", &segment.origin.x, 0.01f);
+		ImGui::DragFloat3("SegmentDiff", &segment.diff.x, 0.01f);
 
 		ImGui::End();
 		aabb = Normalize(aabb);
@@ -92,7 +92,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		
 		DrawGrid(viewProjectionMatrix,viewPortMatrix);
 		DrawAABB(aabb, viewProjectionMatrix, viewPortMatrix,color);
-		DrawSphere(sphere, viewProjectionMatrix, viewPortMatrix,WHITE);
+		DrawSegment(segment,WHITE, viewProjectionMatrix, viewPortMatrix);
 		///
 		/// ↑描画処理ここまで
 		///

@@ -14,3 +14,7 @@ bool IsCollision(const Triangle& t, const Line& l);
 bool IsCollision(const Triangle& t, const Ray& r);
 bool IsCollision(const AABB& aabb1, const AABB& aabb2);
 bool IsCollision(const AABB& aabb, const Sphere& sphere);
+bool IsCollision(const AABB& aabb, const Segment& segment);
+bool IsCollision(const AABB& aabb, const Line& segment);
+bool IsCollision(const AABB& aabb, const Ray& segment);
+
