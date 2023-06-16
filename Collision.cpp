@@ -1,6 +1,7 @@
 #include "Collision.h"
 #include "VectorFunction.h"
 #include <cmath>
+#include <algorithm>
 bool IsCollision(const Sphere& s, const Plane& p)
 {
 	float k = (Dot(p.nomal,s.center)-p.distance);
@@ -144,6 +145,20 @@ bool IsCollision(const AABB& aabb1, const AABB& aabb2)
 	if ((normalized1.min.x <= normalized2.max.x && normalized1.max.x >= normalized2.min.x) && 
 		(normalized1.min.y <= normalized2.max.y && normalized1.max.y >= normalized2.min.y) && 
 		(normalized1.min.z <= normalized2.max.z && normalized1.max.z >= normalized2.min.z))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool IsCollision(const AABB& aabb, const Sphere& sphere)
+{
+	Vector3 closestPoint{std::clamp(sphere.center.x,aabb.min.x,aabb.max.x),
+		std::clamp(sphere.center.y,aabb.min.y,aabb.max.y) ,
+		std::clamp(sphere.center.z,aabb.min.z,aabb.max.z) };
+
+	float distance = Length(closestPoint - sphere.center);
+	if (distance <= sphere.radius)
 	{
 		return true;
 	}

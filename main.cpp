@@ -41,8 +41,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	DebugCamera debugCamera;
 	debugCamera.Initialize({1.0f,1.0f,1.0f},cameraRotate,cameraTranslate);
 
-	AABB aabb1{ .min{-0.5f,-0.5f,-0.5f}, .max{0.0f,0.0f,0.0f} };
-	AABB aabb2{ .min{0.2f,0.2f,0.2f}, .max{1.0f,1.0f,1.0f} };
+	AABB aabb{ .min{-0.5f,-0.5f,-0.5f}, .max{0.0f,0.0f,0.0f} };
+	Sphere sphere{Vector3{0.0f,0.0f,0.0f},1.0f };
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -66,7 +66,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewPortMatrix = MakeViewportMatrix(0,0,float(kWindowWidth) ,float(kWindowHeight),0.0f,1.0f);
 		
 		uint32_t color = WHITE;
-		if (IsCollision(aabb1,aabb2))
+		if (IsCollision(aabb,sphere))
 		{
 			color = RED;
 		}
@@ -74,15 +74,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Begin("Window");
 		//ImGui::DragFloat3("CameraTranslate",&cameraTranslate.x,0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
-		ImGui::DragFloat3("AABB1Min", &aabb1.min.x, 0.01f);
-		ImGui::DragFloat3("AABB1Max", &aabb1.max.x, 0.01f);
-		ImGui::DragFloat3("AABB2Min", &aabb2.min.x, 0.01f);
-		ImGui::DragFloat3("AABB2Max", &aabb2.max.x, 0.01f);
+		ImGui::DragFloat3("AABBMin", &aabb.min.x, 0.01f);
+		ImGui::DragFloat3("AABBMax", &aabb.max.x, 0.01f);
+		ImGui::DragFloat3("SphereCenter", &sphere.center.x, 0.01f);
+		ImGui::DragFloat("SphereRadius", &sphere.radius, 0.01f);
 
 		ImGui::End();
-		aabb1 = Normalize(aabb1);
-		aabb2 = Normalize(aabb2);
-
+		aabb = Normalize(aabb);
+		
 		///
 		/// ↑更新処理ここまで
 		///
@@ -92,8 +91,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		
 		DrawGrid(viewProjectionMatrix,viewPortMatrix);
-		DrawAABB(aabb1, viewProjectionMatrix, viewPortMatrix,color);
-		DrawAABB(aabb2, viewProjectionMatrix, viewPortMatrix, WHITE);
+		DrawAABB(aabb, viewProjectionMatrix, viewPortMatrix,color);
+		DrawSphere(sphere, viewProjectionMatrix, viewPortMatrix,WHITE);
 		///
 		/// ↑描画処理ここまで
 		///
