@@ -19,3 +19,6 @@ bool IsCollision(const AABB& aabb, const Segment& segment);
 bool IsCollision(const AABB& aabb, const Line& segment);
 bool IsCollision(const AABB& aabb, const Ray& segment);
 bool IsCollision(const OBB& obb, const Sphere& sphere);
+bool IsCollision(const OBB& obb, const Segment& segment);
+bool IsCollision(const OBB& obb, const Line& segment);
+bool IsCollision(const OBB& obb, const Ray& segment);

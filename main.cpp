@@ -42,10 +42,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	DebugCamera debugCamera;
 	debugCamera.Initialize({1.0f,1.0f,1.0f},cameraRotate,cameraTranslate);
 
-	OBB obb{ .center{0,0,0}, .size{0.5f,0.5f,0.5f} };
+	OBB obb{ .center{-1.0f,0,0}, .size{0.5f,0.5f,0.5f} };
 	Vector3 rotate{0.0f,0.0f,0.0f};
-	//Segment segment{ {-0.7f,0.3f,0.0f},{2.0f,-0.5f,0.0f} };
-	Sphere sphere{ {1.0f,0.0f,0.0f},1.0f };
+	Segment segment{ {-0.8f,0.3f,0.0f},{0.5f,0.5f,0.5f} };
+	//Sphere sphere{ {1.0f,0.0f,0.0f},1.0f };
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -73,7 +73,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewPortMatrix = MakeViewportMatrix(0,0,float(kWindowWidth) ,float(kWindowHeight),0.0f,1.0f);
 		
 		uint32_t color = WHITE;
-		if (IsCollision(obb, sphere))
+		if (IsCollision(obb, segment))
 		{
 			color = RED;
 		}
@@ -84,8 +84,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("OBBCenter", &obb.center.x, 0.01f);
 		ImGui::DragFloat3("OBBORotate", &rotate.x, 0.01f);
 		ImGui::DragFloat3("OBBSize", &obb.size.x, 0.01f);
-		//ImGui::DragFloat3("SegmentOrigin", &segment.origin.x, 0.01f);
-		//ImGui::DragFloat3("SegmentDiff", &segment.diff.x, 0.01f);
+		ImGui::DragFloat3("SegmentOrigin", &segment.origin.x, 0.01f);
+		ImGui::DragFloat3("SegmentDiff", &segment.diff.x, 0.01f);
 
 		ImGui::End();
 		//rotate = Normalize(rotate);
@@ -99,8 +99,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		
 		DrawGrid(viewProjectionMatrix,viewPortMatrix);
 		DrawOBB(obb, viewProjectionMatrix, viewPortMatrix,color);
-		DrawSphere(sphere, viewProjectionMatrix, viewPortMatrix,WHITE);
-		//DrawSegment(segment,WHITE, viewProjectionMatrix, viewPortMatrix);
+		//DrawSphere(sphere, viewProjectionMatrix, viewPortMatrix,WHITE);
+		DrawSegment(segment,WHITE, viewProjectionMatrix, viewPortMatrix);
 		///
 		/// ↑描画処理ここまで
 		///

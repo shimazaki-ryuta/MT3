@@ -269,3 +269,36 @@ bool IsCollision(const OBB& obb, const Sphere& sphere)
 	localSphere.radius = sphere.radius;
 	return IsCollision(aabb, localSphere);
 }
+
+bool IsCollision(const OBB& obb, const Segment& segment)
+{
+	AABB localAABB{ -1.0f*obb.size,obb.size };
+	Matrix4x4 worldInverse = Inverse(GetRotate(obb) * MakeTranslateMatrix(obb.center));
+	auto localLine = segment;
+	localLine.origin = segment.origin * worldInverse;
+	Vector3 localLineEnd = (segment.origin + segment.diff) * worldInverse;
+	localLine.diff = localLineEnd - localLine.origin;
+	return IsCollision(localAABB,localLine);
+}
+
+bool IsCollision(const OBB& obb, const Line& segment)
+{
+	AABB localAABB{ -1.0f * obb.size,obb.size };
+	Matrix4x4 worldInverse = Inverse(GetRotate(obb) * MakeTranslateMatrix(obb.center));
+	auto localLine = segment;
+	localLine.origin = segment.origin * worldInverse;
+	Vector3 localLineEnd = (segment.origin + segment.diff) * worldInverse;
+	localLine.diff = localLineEnd - localLine.origin;
+	return IsCollision(localAABB, localLine);
+}
+
+bool IsCollision(const OBB& obb, const Ray& segment)
+{
+	AABB localAABB{ -1.0f * obb.size,obb.size };
+	Matrix4x4 worldInverse = Inverse(GetRotate(obb) * MakeTranslateMatrix(obb.center));
+	auto localLine = segment;
+	localLine.origin = segment.origin * worldInverse;
+	Vector3 localLineEnd = (segment.origin + segment.diff) * worldInverse;
+	localLine.diff = localLineEnd - localLine.origin;
+	return IsCollision(localAABB, localLine);
+}
