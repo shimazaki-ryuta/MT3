@@ -1,6 +1,8 @@
 #include "MatrixFunction.h"
 #include <math.h>
 #include <Novice.h>
+#include <assert.h>
+#include <cmath>
 
 template<typename MatrixSize>
 int ColumnSize(MatrixSize m)

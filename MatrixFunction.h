@@ -2,11 +2,8 @@
 #include "matrix.h"
 #include "Vector3.h"
 #include <Matrix4x4.h>
-#include <math.h>
-#include <assert.h>
-#include <Novice.h>
-#include <assert.h>
-#include <cmath>
+
+
 
 /*
 

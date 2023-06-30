@@ -1,5 +1,6 @@
 #include "Collision.h"
 #include "VectorFunction.h"
+#include "MatrixFunction.h"
 #include <cmath>
 #include <algorithm>
 bool IsCollision(const Sphere& s, const Plane& p)
@@ -250,4 +251,21 @@ bool IsCollision(const AABB& aabb, const Ray& segment)
 		}
 	}
 	return false;
+}
+
+bool IsCollision(const OBB& obb, const Sphere& sphere)
+{
+	AABB aabb;
+	aabb.min.x = -obb.size.x;
+	aabb.min.y = -obb.size.y;
+	aabb.min.z = -obb.size.z;
+	aabb.max.x = obb.size.x;
+	aabb.max.y = obb.size.y;
+	aabb.max.z = obb.size.z;
+
+	Matrix4x4 worldInverse = Inverse(GetRotate(obb)*MakeTranslateMatrix(obb.center));
+	Sphere localSphere;
+	localSphere.center = sphere.center * worldInverse;
+	localSphere.radius = sphere.radius;
+	return IsCollision(aabb, localSphere);
 }

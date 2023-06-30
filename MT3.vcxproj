@@ -112,6 +112,7 @@
     <ClCompile Include="Draw3dStandard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MatrixFunction.cpp" />
+    <ClCompile Include="OBB.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Triangle.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="Draw3dStandard.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="MatrixFunction.h" />
+    <ClInclude Include="OBB.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Triangle.h" />

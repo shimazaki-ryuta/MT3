@@ -34,9 +34,9 @@ void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, con
 		{
 			float lon = lonIndex * kLonEvery;
 			Vector3 a, b, c;
-			a = { sphere.radius * cosf(lat) * cosf(lon)			,sphere.radius * sinf(lat),sphere.radius * cosf(lat) * sin(lon) };
-			b = { sphere.radius * cosf(lat + kLatEvery) * cosf(lon),sphere.radius * sinf(lat + kLatEvery),sphere.radius * cosf(lat + kLatEvery) * sin(lon) };
-			c = { sphere.radius * cosf(lat) * cosf(lon + kLonEvery),sphere.radius * sinf(lat),sphere.radius * cosf(lat) * sin(lon + kLonEvery) };
+			a = { sphere.radius * cosf(lat) * cosf(lon)			,sphere.radius * sinf(lat),sphere.radius * cosf(lat) * sinf(lon) };
+			b = { sphere.radius * cosf(lat + kLatEvery) * cosf(lon),sphere.radius * sinf(lat + kLatEvery),sphere.radius * cosf(lat + kLatEvery) * sinf(lon) };
+			c = { sphere.radius * cosf(lat) * cosf(lon + kLonEvery),sphere.radius * sinf(lat),sphere.radius * cosf(lat) * sinf(lon + kLonEvery) };
 
 			Vector3 ndcA = Transform(a, worldViewProjectionMatrix);
 			a = Transform(ndcA, viewportMatrix);
