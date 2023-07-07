@@ -309,9 +309,9 @@ bool IsCollision(const OBB& obb1, const OBB& obb2)
 	separatingAxis[0] = obb1.oridentatios[0];
 	separatingAxis[1] = obb1.oridentatios[1];
 	separatingAxis[2] = obb1.oridentatios[2];
-	separatingAxis[3] = obb1.oridentatios[0];
-	separatingAxis[4] = obb1.oridentatios[1];
-	separatingAxis[5] = obb1.oridentatios[2];
+	separatingAxis[3] = obb2.oridentatios[0];
+	separatingAxis[4] = obb2.oridentatios[1];
+	separatingAxis[5] = obb2.oridentatios[2];
 	int axisNum = 6;
 	for (int index1=0;index1<3;index1++)
 	{
