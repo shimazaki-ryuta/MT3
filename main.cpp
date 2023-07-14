@@ -13,6 +13,8 @@
 #include "Draw3dStandard.h"
 #include "AABB.h"
 #include "OBB.h"
+
+#include "Curve.h"
 const char kWindowTitle[] = "LE2A_07_シマザキリュウタ";
 
 const int kWindowWidth = 1280;
@@ -42,13 +44,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	DebugCamera debugCamera;
 	debugCamera.Initialize({1.0f,1.0f,1.0f},cameraRotate,cameraTranslate);
 
-	OBB obb1{ .center{0,0,0}, .size{0.83f,0.26f,0.24f} };
-	OBB obb2{ .center{0.9f,0.66f,0.78f}, .size{0.5f,0.37f,0.5f} };
+	Vector3 controlPoints[3] = {
+		{-0.8f,0.58f,1.0f},{1.76f,1.0f,-0.3f},{0.94f,-0.7f,2.3f} };
 
-	Vector3 rotate1{ 0.0f,0.0f,0.0f };
-	Vector3 rotate2{ -0.05f,-2.49f,0.15f };
+	Sphere cpSphere0 = {.center = controlPoints[0], .radius = 0.01f};
+	Sphere cpSphere1 = { .center = controlPoints[1],.radius = 0.01f };
+	Sphere cpSphere2 = { .center = controlPoints[2],.radius = 0.01f };
 
-	Segment segment{ {-0.8f,0.3f,0.0f},{0.5f,0.5f,0.5f} };
+
 	//Sphere sphere{ {1.0f,0.0f,0.0f},1.0f };
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -64,11 +67,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		debugCamera.Update();
 		
-		Matrix4x4 rotateMatrix = MakeRotateMatrix(rotate1);
-		SetOridentatios(obb1, rotateMatrix);
-		rotateMatrix = MakeRotateMatrix(rotate2);
-		SetOridentatios(obb2, rotateMatrix);
-
+		
 
 		//Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate,cameraTranslate);
 		Matrix4x4 viewMatrix = Inverse(debugCamera.GetWorld());
@@ -78,24 +77,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		Matrix4x4 viewPortMatrix = MakeViewportMatrix(0,0,float(kWindowWidth) ,float(kWindowHeight),0.0f,1.0f);
 		
-		uint32_t color = WHITE;
-		if (IsCollision(obb1,obb2))
-		{
-			color = RED;
-		}
+		
 		
 		ImGui::Begin("Window");
 		//ImGui::DragFloat3("CameraTranslate",&cameraTranslate.x,0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
-		ImGui::DragFloat3("OBB1Center", &obb1.center.x, 0.01f);
-		ImGui::DragFloat3("OBB1ORotate", &rotate1.x, 0.01f);
-		ImGui::DragFloat3("OBB1Size", &obb1.size.x, 0.01f);
-		ImGui::DragFloat3("OBB2Center", &obb2.center.x, 0.01f);
-		ImGui::DragFloat3("OBB2ORotate", &rotate2.x, 0.01f);
-		ImGui::DragFloat3("OBB2Size", &obb2.size.x, 0.01f);
-
+		ImGui::DragFloat3("ControlPoint0", &controlPoints[0].x, 0.01f);
+		ImGui::DragFloat3("ControlPoint1", &controlPoints[1].x, 0.01f);
+		ImGui::DragFloat3("ControlPoint2", &controlPoints[2].x, 0.01f);
 		ImGui::End();
-		//rotate = Normalize(rotate);
+
+
+		cpSphere0.center = controlPoints[0];
+		cpSphere1.center = controlPoints[1];
+		cpSphere2.center = controlPoints[2];
 		///
 		/// ↑更新処理ここまで
 		///
@@ -105,9 +100,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		
 		DrawGrid(viewProjectionMatrix,viewPortMatrix);
-		DrawOBB(obb1, viewProjectionMatrix, viewPortMatrix, color);
-		DrawOBB(obb2, viewProjectionMatrix, viewPortMatrix, WHITE);
-		
+		DrawBezier(controlPoints[0], controlPoints[1], controlPoints[2], viewProjectionMatrix, viewPortMatrix,BLUE);
+
+		DrawSphere(cpSphere0, viewProjectionMatrix, viewPortMatrix,BLACK);
+		DrawSphere(cpSphere1, viewProjectionMatrix, viewPortMatrix, BLACK);
+		DrawSphere(cpSphere2, viewProjectionMatrix, viewPortMatrix, BLACK);
 		///
 		/// ↑描画処理ここまで
 		///

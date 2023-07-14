@@ -98,6 +98,11 @@ Vector3 ClosestPoint(const Vector3& point, const Segment& segment)
 	return Add(segment.origin,Multiply(t,b));
 }
 
+Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t)
+{
+	return v1 + Multiply(t, v2 - v1);
+}
+
 void VectorScreenPrintf(int x,int y, Vector3 v,const char* label)
 {
 	Novice::ScreenPrintf(x, y, "%6.02f", v.x);

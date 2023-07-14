@@ -546,6 +546,11 @@ Vector3 operator*(const Vector3& v, const Matrix4x4& matrix)
 	return Transform(v,matrix);
 }
 
+Vector3 operator*=(Vector3& v, const Matrix4x4& matrix)
+{
+	return v = Transform(v, matrix);
+}
+
 Matrix4x4 operator*(const Matrix4x4& matrix1, const Matrix4x4& matrix2)
 {
 	return Multiply(matrix1,matrix2);
