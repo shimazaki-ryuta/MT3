@@ -1,5 +1,6 @@
 #include <Novice.h>
 #include <imgui.h>
+#include <list>
 #include "Vector3.h"
 #include "VectorFunction.h"
 #include "Matrix4x4.h"
@@ -44,13 +45,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	DebugCamera debugCamera;
 	debugCamera.Initialize({1.0f,1.0f,1.0f},cameraRotate,cameraTranslate);
 
-	Vector3 controlPoints[3] = {
-		{-0.8f,0.58f,1.0f},{1.76f,1.0f,-0.3f},{0.94f,-0.7f,2.3f} };
+	std::vector<Vector3> controlPoints = {
+		{-0.8f,0.58f,1.0f},{1.76f,1.0f,-0.3f},{0.94f,-0.7f,2.3f},{-0.53f,-0.26f,-0.15f} };
 
-	Sphere cpSphere0 = {.center = controlPoints[0], .radius = 0.01f};
-	Sphere cpSphere1 = { .center = controlPoints[1],.radius = 0.01f };
-	Sphere cpSphere2 = { .center = controlPoints[2],.radius = 0.01f };
-
+	
 
 	//Sphere sphere{ {1.0f,0.0f,0.0f},1.0f };
 	// ウィンドウの×ボタンが押されるまでループ
@@ -82,15 +80,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Begin("Window");
 		//ImGui::DragFloat3("CameraTranslate",&cameraTranslate.x,0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
-		ImGui::DragFloat3("ControlPoint0", &controlPoints[0].x, 0.01f);
-		ImGui::DragFloat3("ControlPoint1", &controlPoints[1].x, 0.01f);
-		ImGui::DragFloat3("ControlPoint2", &controlPoints[2].x, 0.01f);
+		int index = 0;
+		for (std::vector<Vector3>::iterator controlPoint = controlPoints.begin();controlPoint != controlPoints.end();controlPoint++)
+		{
+			char name[18];
+			sprintf_s(name,"ControlPoint[%d]",index);
+			ImGui::DragFloat3(name, &controlPoint->x, 0.01f);
+			index++;
+		}
 		ImGui::End();
 
 
-		cpSphere0.center = controlPoints[0];
-		cpSphere1.center = controlPoints[1];
-		cpSphere2.center = controlPoints[2];
 		///
 		/// ↑更新処理ここまで
 		///
@@ -100,11 +100,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		
 		DrawGrid(viewProjectionMatrix,viewPortMatrix);
-		DrawBezier(controlPoints[0], controlPoints[1], controlPoints[2], viewProjectionMatrix, viewPortMatrix,BLUE);
+		DrawCatmullRom(controlPoints, viewProjectionMatrix, viewPortMatrix, BLUE);
+		Sphere cpSphere;
+		cpSphere.radius = 0.01f;
+		for (Vector3 controlPoint : controlPoints)
+		{
+			cpSphere.center = controlPoint;
+			DrawSphere(cpSphere, viewProjectionMatrix, viewPortMatrix, BLACK);
+		}
 
-		DrawSphere(cpSphere0, viewProjectionMatrix, viewPortMatrix,BLACK);
-		DrawSphere(cpSphere1, viewProjectionMatrix, viewPortMatrix, BLACK);
-		DrawSphere(cpSphere2, viewProjectionMatrix, viewPortMatrix, BLACK);
 		///
 		/// ↑描画処理ここまで
 		///
