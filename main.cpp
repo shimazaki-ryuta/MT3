@@ -48,6 +48,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::vector<Vector3> controlPoints = {
 		{-0.8f,0.58f,1.0f},{1.76f,1.0f,-0.3f},{0.94f,-0.7f,2.3f},{-0.53f,-0.26f,-0.15f} };
 
+
+	Vector3 translate[3] = {
+		{0.2f,1.0f,0.0f},{0.4f,0.0f,0.0f},{0.3f,0.0f,0.0f}
+	};
+
+	Vector3 rotate[3] = {
+		{0.0f,0.0f,-6.8f},{0.0f,0.0f,-1.4f},{0.0f,0.0f,0.0f}
+	};
+
+	Vector3 scale[3] = {
+		{1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f},{1.0f,1.0f,1.0f}
+	};
+
+	uint32_t color[3] = {RED,GREEN,BLUE};
 	
 
 	//Sphere sphere{ {1.0f,0.0f,0.0f},1.0f };
@@ -80,13 +94,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Begin("Window");
 		//ImGui::DragFloat3("CameraTranslate",&cameraTranslate.x,0.01f);
 		ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
-		int index = 0;
-		for (std::vector<Vector3>::iterator controlPoint = controlPoints.begin();controlPoint != controlPoints.end();controlPoint++)
+		for (int index = 0; index < 3; index++)
 		{
-			char name[18];
-			sprintf_s(name,"ControlPoint[%d]",index);
-			ImGui::DragFloat3(name, &controlPoint->x, 0.01f);
-			index++;
+			char tag[32];
+			sprintf_s(tag,"Translate[%d]",index);
+			ImGui::DragFloat3(tag, &translate[index].x, 0.01f);
+			sprintf_s(tag, "Rotate[%d]", index);
+			ImGui::DragFloat3(tag, &rotate[index].x, 0.01f);
+			sprintf_s(tag, "Scale[%d]", index);
+			ImGui::DragFloat3(tag, &scale[index].x, 0.01f);
 		}
 		ImGui::End();
 
@@ -100,14 +116,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		
 		DrawGrid(viewProjectionMatrix,viewPortMatrix);
-		DrawCatmullRom(controlPoints, viewProjectionMatrix, viewPortMatrix, BLUE);
-		Sphere cpSphere;
-		cpSphere.radius = 0.01f;
-		for (Vector3 controlPoint : controlPoints)
+		Matrix4x4 parentWorld = MakeIdentity4x4();
+		Vector3 world[3];
+		for (int index = 0;index < 3;index++)
 		{
-			cpSphere.center = controlPoint;
-			DrawSphere(cpSphere, viewProjectionMatrix, viewPortMatrix, BLACK);
+			parentWorld =  MakeAffineMatrix(scale[index], rotate[index], translate[index]) * parentWorld;
+			Sphere sphere = { .center{parentWorld.m[3][0],parentWorld.m[3][1],parentWorld.m[3][2]},.radius{0.05f} };
+			world[index] = sphere.center;
+			DrawSphere(sphere,viewProjectionMatrix,viewPortMatrix,color[index]);
+
 		}
+		Segment segment1 = { world[0],world[1] - world[0] };
+		Segment segment2 = { world[1],world[2] - world[1] };
+		DrawSegment(segment1, WHITE, viewProjectionMatrix, viewPortMatrix);
+		DrawSegment(segment2, WHITE, viewProjectionMatrix, viewPortMatrix);
 
 		///
 		/// ↑描画処理ここまで
