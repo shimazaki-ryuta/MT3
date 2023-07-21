@@ -546,12 +546,15 @@ Vector3 operator*(const Vector3& v, const Matrix4x4& matrix)
 	return Transform(v,matrix);
 }
 
+Matrix4x4 operator*(const Matrix4x4& m1, const Matrix4x4& m2) { return Multiply(m1, m2); }
+Matrix4x4 operator+(const Matrix4x4& m1, const Matrix4x4& m2) { return Add(m1, m2); }
+Matrix4x4 operator-(const Matrix4x4& m1, const Matrix4x4& m2) { return Subtract(m1, m2); }
+
 Vector3 operator*=(Vector3& v, const Matrix4x4& matrix)
 {
 	return v = Transform(v, matrix);
 }
 
-Matrix4x4 operator*(const Matrix4x4& matrix1, const Matrix4x4& matrix2)
-{
-	return Multiply(matrix1,matrix2);
-}
+Matrix4x4 Matrix4x4::operator*=(const Matrix4x4& matrix) { *this = Multiply(*this, matrix); return *this; }
+Matrix4x4 Matrix4x4::operator+=(const Matrix4x4& matrix) { *this = Add(*this, matrix); return *this; }
+Matrix4x4 Matrix4x4::operator-=(const Matrix4x4& matrix) { *this = Subtract(*this, matrix); return *this; }
