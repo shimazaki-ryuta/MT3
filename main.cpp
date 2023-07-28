@@ -1,6 +1,7 @@
 #include <Novice.h>
 #include <imgui.h>
 #include <list>
+#include <cmath>
 #include "Vector3.h"
 #include "VectorFunction.h"
 #include "Matrix4x4.h"
@@ -78,9 +79,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ball.velocity = {0.0f,0.0f,0.0f};
 	ball.mass = 2.0f;
 	ball.radius = 0.05f;
-	ball.color = BLUE;
+	ball.color = WHITE;
 
 	const Vector3 kGravity{0.0f,-9.8f,0.0f};
+
+	float angularVelocity = 3.14f;
+
+	float angle = 0.0f;
+
+	float r = 0.8f;
 
 		//Sphere sphere{ {1.0f,0.0f,0.0f},1.0f };
 	// ウィンドウの×ボタンが押されるまでループ
@@ -110,22 +117,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		if (Calclation)
 		{
-			Vector3 diff = ball.position - spring.anchor;
-			float length = Length(diff);
-			if (length != 0.0f)
-			{
-				Vector3 direction = Normalize(diff);
-				Vector3 restPosition = spring.anchor + direction * spring.naturalLength;
-				Vector3 displacement = length * (ball.position - restPosition);
-				Vector3 restoringForce = -spring.stiffness * displacement;
-				Vector3 dampingForce = -spring.dampingCoefficient * ball.velocity;
-				Vector3 force = restoringForce + dampingForce;
-				ball.acceleration = force / ball.mass;
-			}
-
-			ball.velocity += (ball.acceleration + kGravity) * deltaTime;
-			ball.position += ball.velocity * deltaTime;
+			angle += angularVelocity * deltaTime;
 		}
+		ball.position.x = std::cos(angle) * r;
+		ball.position.y = std::sin(angle) * r;
 
 
 
@@ -147,8 +142,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewPortMatrix);
-		Segment segment{spring.anchor,ball.position-spring.anchor};
-		DrawSegment(segment,WHITE, viewProjectionMatrix, viewPortMatrix);
 		Sphere sphere{ ball.position,ball.radius };
 		DrawSphere(sphere, viewProjectionMatrix, viewPortMatrix,ball.color);
 		///
