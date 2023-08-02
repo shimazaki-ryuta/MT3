@@ -53,6 +53,15 @@ struct Pendulum
 	float angularAcceleration;
 };
 
+struct ConicalPendulum
+{
+	Vector3 anchor;
+	float length;
+	float halfApexAngle;
+	float angle;
+	float angularVelocity;
+};
+
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -90,12 +99,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ball.radius = 0.05f;
 	ball.color = WHITE;
 
-	Pendulum pendulum;
+	ConicalPendulum pendulum;
 	pendulum.anchor = {0.0f,1.0f,0.0f};
 	pendulum.length = 0.8f;
-	pendulum.angle = 0.7f;
+	pendulum.halfApexAngle = 0.7f;
+	pendulum.angle = 0.0f;
 	pendulum.angularVelocity = 0.0f;
-	pendulum.angularAcceleration = 0.0f;
 
 
 	const Vector3 kGravity{0.0f,-9.8f,0.0f};
@@ -134,14 +143,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		if (Calclation)
 		{
-			pendulum.angularAcceleration = (kGravity.y / pendulum.length) * std::sin(pendulum.angle);
-			pendulum.angularVelocity += pendulum.angularAcceleration * deltaTime;
+			//pendulum.angularAcceleration = (kGravity.y / pendulum.length) * std::sin(pendulum.angle);
+			pendulum.angularVelocity = std::sqrt(-kGravity.y / (pendulum.length * std::cos(pendulum.halfApexAngle)));
 			pendulum.angle += pendulum.angularVelocity * deltaTime;
 
 		}
-		ball.position.x = pendulum.anchor.x + std::sin(pendulum.angle) * pendulum.length;
-		ball.position.y = pendulum.anchor.y - std::cos(pendulum.angle) * pendulum.length;
-		ball.position.z = pendulum.anchor.z;
+		float radius = std::sin(pendulum.halfApexAngle) * pendulum.length;
+		float height = std::cos(pendulum.halfApexAngle) * pendulum.length;
+		ball.position.x = pendulum.anchor.x + std::cos(pendulum.angle) * radius;
+		ball.position.y = pendulum.anchor.y - height;
+		ball.position.z = pendulum.anchor.z - std::sin(pendulum.angle) * radius;
+
 
 
 
@@ -150,6 +162,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{
 			Calclation = true;
 		}
+		ImGui::DragFloat("Length", &pendulum.length);
+		ImGui::DragFloat("HalfApexAngle", &pendulum.halfApexAngle);
 		ImGui::End();
 
 
