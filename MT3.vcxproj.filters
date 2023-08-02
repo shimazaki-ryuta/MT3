@@ -150,5 +150,6 @@
     <ClInclude Include="AABB.h" />
     <ClInclude Include="OBB.h" />
     <ClInclude Include="Curve.h" />
+    <ClInclude Include="Capsule.h" />
   </ItemGroup>
 </Project>

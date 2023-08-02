@@ -86,26 +86,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	bool Calclation = false;
 	
-	Spring spring;
-	spring.anchor = {0.0f,1.0f,0.0f};
-	spring.naturalLength = 0.7f;
-	spring.stiffness = 100.0f;
-	spring.dampingCoefficient = 2.0f;
+	Plane plane;
+	plane.nomal = Normalize(Vector3{-0.2f,0.9f,-0.3f});
+	plane.distance = 0.0f;
 
 	Ball ball;
-	ball.position = {0.0f,-1.0f,0.0f};
+	ball.position = {0.8f,1.2f,0.3f};
 	ball.velocity = {0.0f,0.0f,0.0f};
 	ball.mass = 2.0f;
 	ball.radius = 0.05f;
 	ball.color = WHITE;
 
-	ConicalPendulum pendulum;
-	pendulum.anchor = {0.0f,1.0f,0.0f};
-	pendulum.length = 0.8f;
-	pendulum.halfApexAngle = 0.7f;
-	pendulum.angle = 0.0f;
-	pendulum.angularVelocity = 0.0f;
-
+	float e = 0.8f;
 
 	const Vector3 kGravity{0.0f,-9.8f,0.0f};
 
@@ -143,17 +135,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		if (Calclation)
 		{
-			//pendulum.angularAcceleration = (kGravity.y / pendulum.length) * std::sin(pendulum.angle);
-			pendulum.angularVelocity = std::sqrt(-kGravity.y / (pendulum.length * std::cos(pendulum.halfApexAngle)));
-			pendulum.angle += pendulum.angularVelocity * deltaTime;
-
+			ball.acceleration = kGravity;
+			ball.velocity += ball.acceleration * deltaTime;
+			Capsule capsule{ {ball.position,ball.velocity},ball.radius };
+			ball.position += ball.velocity * deltaTime;
+			if (IsCollision(Sphere{ball.position,ball.radius},plane))
+			{
+				ball.position = PushBack(capsule,plane);
+				ball.velocity = Refrect(ball.velocity,plane.nomal) * e;
+			}
 		}
-		float radius = std::sin(pendulum.halfApexAngle) * pendulum.length;
-		float height = std::cos(pendulum.halfApexAngle) * pendulum.length;
-		ball.position.x = pendulum.anchor.x + std::cos(pendulum.angle) * radius;
-		ball.position.y = pendulum.anchor.y - height;
-		ball.position.z = pendulum.anchor.z - std::sin(pendulum.angle) * radius;
-
+	
 
 
 
@@ -162,8 +154,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{
 			Calclation = true;
 		}
-		ImGui::DragFloat("Length", &pendulum.length);
-		ImGui::DragFloat("HalfApexAngle", &pendulum.halfApexAngle);
 		ImGui::End();
 
 
@@ -176,8 +166,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewPortMatrix);
-		Segment segment{pendulum.anchor,ball.position-pendulum.anchor};
-		DrawSegment(segment,WHITE, viewProjectionMatrix, viewPortMatrix);
+		DrawPlane(plane, viewProjectionMatrix, viewPortMatrix, WHITE);
 		Sphere sphere{ ball.position,ball.radius };
 		DrawSphere(sphere, viewProjectionMatrix, viewPortMatrix,ball.color);
 		///

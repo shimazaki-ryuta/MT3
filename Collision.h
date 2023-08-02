@@ -5,6 +5,7 @@
 #include "Triangle.h"
 #include "AABB.h"
 #include "OBB.h"
+#include "Capsule.h"
 
 bool IsCollision(const Sphere& s, const Plane& p);
 bool IsCollision(const Segment& s, const Plane& p);
@@ -23,3 +24,5 @@ bool IsCollision(const OBB& obb, const Segment& segment);
 bool IsCollision(const OBB& obb, const Line& segment);
 bool IsCollision(const OBB& obb, const Ray& segment);
 bool IsCollision(const OBB& obb1, const OBB& obb2);
+
+Vector3 PushBack(const Capsule& capsule,const Plane& plane);

@@ -147,6 +147,7 @@
     <ClInclude Include="C:\KamataEngine\DirectXGame\input\Input.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\scene\GameScene.h" />
     <ClInclude Include="C:\KamataEngine\Adapter\Novice.h" />
+    <ClInclude Include="Capsule.h" />
     <ClInclude Include="Curve.h" />
     <ClInclude Include="MyDebugCamera.h" />
     <ClInclude Include="Collision.h" />

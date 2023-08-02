@@ -111,6 +111,11 @@ void VectorScreenPrintf(int x,int y, Vector3 v,const char* label)
 	Novice::ScreenPrintf(x + kColumnWidth*3, y, "%s", label);
 }
 
+Vector3 Refrect(const Vector3& i, const Vector3& n)
+{
+	return i - 2 * Dot(i, n) * n;
+}
+
 Vector3 operator+(const Vector3& v) { return v; }
 Vector3 operator-(const Vector3& v) { return Vector3{-v.x,-v.y,-v.z}; }
 

@@ -394,3 +394,18 @@ bool IsCollision(const OBB& obb1, const OBB& obb2)
 	}
 	return true;
 }
+
+Vector3 PushBack(const Capsule& capsule, const Plane& plane)
+{
+	float dot = Dot(capsule.segment.diff, plane.nomal);
+	if (dot == 0)
+	{
+		return capsule.segment.origin+ capsule.segment.diff;
+	}
+	float t = (plane.distance - Dot(capsule.segment.origin, plane.nomal)) / dot;
+	if (t >= 0.0f && t <= 1.0f)
+	{
+		return capsule.segment.origin + t*capsule.segment.diff -  capsule.radius * Normalize(capsule.segment.diff-capsule.segment.origin);
+	}
+	return capsule.segment.origin + capsule.segment.diff;
+}

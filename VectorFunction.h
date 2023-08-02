@@ -18,6 +18,8 @@ Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
 
 Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
 
+Vector3 Refrect(const Vector3& i, const Vector3& n);
+
 void VectorScreenPrintf(int x, int y, Vector3 v, const char* label);
 
 Vector3 operator+(const Vector3&);
