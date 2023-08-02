@@ -44,6 +44,15 @@ struct Spring
 	float dampingCoefficient;
 };
 
+struct Pendulum
+{
+	Vector3 anchor;
+	float length;
+	float angle;
+	float angularVelocity;
+	float angularAcceleration;
+};
+
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -75,19 +84,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	spring.dampingCoefficient = 2.0f;
 
 	Ball ball;
-	ball.position = {0.8f,0.2f,0.0f};
+	ball.position = {0.0f,-1.0f,0.0f};
 	ball.velocity = {0.0f,0.0f,0.0f};
 	ball.mass = 2.0f;
 	ball.radius = 0.05f;
 	ball.color = WHITE;
 
+	Pendulum pendulum;
+	pendulum.anchor = {0.0f,1.0f,0.0f};
+	pendulum.length = 0.8f;
+	pendulum.angle = 0.7f;
+	pendulum.angularVelocity = 0.0f;
+	pendulum.angularAcceleration = 0.0f;
+
+
 	const Vector3 kGravity{0.0f,-9.8f,0.0f};
 
-	float angularVelocity = 3.14f;
+	//float angularVelocity = 3.14f;
 
-	float angle = 0.0f;
+	//float angle = 0.0f;
 
-	float r = 0.8f;
+	//float r = 0.8f;
 
 		//Sphere sphere{ {1.0f,0.0f,0.0f},1.0f };
 	// ウィンドウの×ボタンが押されるまでループ
@@ -117,11 +134,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		if (Calclation)
 		{
-			angle += angularVelocity * deltaTime;
-		}
-		ball.position.x = std::cos(angle) * r;
-		ball.position.y = std::sin(angle) * r;
+			pendulum.angularAcceleration = (kGravity.y / pendulum.length) * std::sin(pendulum.angle);
+			pendulum.angularVelocity += pendulum.angularAcceleration * deltaTime;
+			pendulum.angle += pendulum.angularVelocity * deltaTime;
 
+		}
+		ball.position.x = pendulum.anchor.x + std::sin(pendulum.angle) * pendulum.length;
+		ball.position.y = pendulum.anchor.y - std::cos(pendulum.angle) * pendulum.length;
+		ball.position.z = pendulum.anchor.z;
 
 
 
@@ -142,6 +162,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		DrawGrid(viewProjectionMatrix, viewPortMatrix);
+		Segment segment{pendulum.anchor,ball.position-pendulum.anchor};
+		DrawSegment(segment,WHITE, viewProjectionMatrix, viewPortMatrix);
 		Sphere sphere{ ball.position,ball.radius };
 		DrawSphere(sphere, viewProjectionMatrix, viewPortMatrix,ball.color);
 		///
