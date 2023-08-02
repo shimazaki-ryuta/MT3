@@ -87,7 +87,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	bool Calclation = false;
 	
 	Plane plane;
-	plane.nomal = Normalize(Vector3{-0.2f,0.9f,-0.3f});
+	plane.nomal = Normalize(Vector3{-0.2f,1.2f,-0.3f});
 	plane.distance = 0.0f;
 
 	Ball ball;
