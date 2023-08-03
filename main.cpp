@@ -88,6 +88,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	
 	Plane plane;
 	plane.nomal = Normalize(Vector3{-0.2f,1.2f,-0.3f});
+	//plane.nomal = {0.0f,1.0f,0.0f};
 	plane.distance = 0.0f;
 
 	Ball ball;
@@ -97,7 +98,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ball.radius = 0.05f;
 	ball.color = WHITE;
 
-	float e = 0.8f;
+	float e = 0.7f;
 
 	const Vector3 kGravity{0.0f,-9.8f,0.0f};
 
@@ -154,6 +155,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{
 			Calclation = true;
 		}
+		if (ImGui::Button("Reset"))
+		{
+			ball.position = { 0.8f,1.2f,0.3f };
+			ball.velocity = { 0.0f,0.0f,0.0f };
+		}
+		ImGui::SliderFloat("e",&e,0.0f,1.0f);
 		ImGui::End();
 
 

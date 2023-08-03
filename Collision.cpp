@@ -403,9 +403,21 @@ Vector3 PushBack(const Capsule& capsule, const Plane& plane)
 		return capsule.segment.origin+ capsule.segment.diff;
 	}
 	float t = (plane.distance - Dot(capsule.segment.origin, plane.nomal)) / dot;
+	t = std::clamp(t,0.0f,1.0f);
 	if (t >= 0.0f && t <= 1.0f)
 	{
-		return capsule.segment.origin + t*capsule.segment.diff -  capsule.radius * Normalize(capsule.segment.diff-capsule.segment.origin);
+		Vector3 refrect = Normalize(Refrect(capsule.segment.diff, plane.nomal));
+		float pushbackRect = 1.0f/ Dot(plane.nomal, refrect);
+		
+		Vector3 pushbackPosition;
+		pushbackPosition = capsule.segment.origin + (t*capsule.segment.diff) +  
+			((capsule.radius) * pushbackRect *  -Normalize(capsule.segment.diff));
+		if (Dot((capsule.segment.origin-pushbackPosition),(capsule.segment.origin + capsule.segment.diff- pushbackPosition)) <0)
+		{
+			return pushbackPosition;
+		}
+		return capsule.segment.origin;
+		//return pushbackPosition;
 	}
 	return capsule.segment.origin + capsule.segment.diff;
 }
